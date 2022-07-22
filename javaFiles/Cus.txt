@@ -1,0 +1,79 @@
+package mavenProjs.projs;
+
+import static java.lang.System.in;
+import static java.lang.System.out;
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class Cus {
+	
+	public static void setPass(String name3,String name,String mail_id,String phn_no) throws ClassNotFoundException, SQLException {
+		Scanner sc=new Scanner(in);
+		out.println("Enter your password");
+		String pass=sc.nextLine();
+		out.println("Confirm your password");
+		String pass1=sc.nextLine();
+		
+		if(pass.equals(pass1))
+			setUser(name3,name,mail_id,phn_no,pass);
+		else {
+			out.println("password mismatched.Try Again...");
+			setPass(name3,name,mail_id,phn_no);
+		}
+	}
+	public static void newUser(String name3) throws ClassNotFoundException, SQLException {
+		Scanner sc=new Scanner(in);
+		out.println("Enter your name");
+		String name=sc.nextLine();
+		out.println("Enter your mail_id");
+		String mail_id=sc.nextLine();		
+		out.println("Enter your phone number");
+		String phn_no=sc.nextLine();					
+		setPass(name3,name,mail_id,phn_no);
+	}
+	
+	public static void setUser(String name3,String name,String mail_id,String phn_no,String pass) throws ClassNotFoundException, SQLException {
+		Connection con=getCon();		
+		
+		String s="insert into "+name3+"(name,mail_id,phn_no,pass) values(?,?,?,?)";		
+		PreparedStatement ps=con.prepareStatement(s);
+		
+		ps.setString(1, name);
+		ps.setString(2, mail_id);
+		ps.setString(3, phn_no);
+		ps.setString(4, pass);
+		
+		out.println("New "+name3+" created");
+		ps.executeUpdate();	
+		Login.login();
+		
+		
+	}
+		
+		
+	
+	public static Connection getCon() throws ClassNotFoundException, SQLException{
+		
+		String driver="com.mysql.cj.jdbc.Driver";				// --> 1
+		
+		String url="jdbc:mysql://localhost:3306/proj";			// --> 2
+		String username="root"; 
+		String password="DeV43";
+		
+		Class.forName(driver);									// --> 3		
+		
+		Connection con=DriverManager.getConnection(url, username, password);	// --> 4		
+		
+		return con;
+	}
+	public static void main(String[] args) {
+		
+	}
+
+}
